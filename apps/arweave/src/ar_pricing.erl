@@ -52,6 +52,8 @@ get_price_per_gib_minute(Height, RewardHistory, BlockTimeHistory, Denomination2)
 
 	PreTransitionPrice = ?PRICE_PER_GIB_MINUTE_PRE_TRANSITION,
 	NewPrice = get_price_per_gib_minute2(Height, RewardHistory, BlockTimeHistory, Denomination2),
+	?LOG_INFO([{event, get_price_per_gib_minute},
+		{height, Height}, {price1, PreTransitionPrice}, {price2, NewPrice}]),
 
 	case Height of
 		_ when Height < Fork_2_7 ->
