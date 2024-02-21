@@ -13,6 +13,8 @@
 
 -define(HANDLER_TIMEOUT, 55000).
 
+-define(PRICE_ENDPOINT_MULT, 1.1).
+
 -define(MAX_SERIALIZED_RECENT_HASH_LIST_DIFF, 2400). % 50 * 48.
 -define(MAX_SERIALIZED_MISSING_TX_INDICES, 125). % Every byte encodes 8 positions.
 
@@ -637,7 +639,7 @@ handle(<<"GET">>, [<<"price">>, SizeInBytesBinary], Req, _Pid) ->
 					{400, #{}, jiffy:encode(#{ error => size_must_be_an_integer }), Req};
 				Size ->
 					{Fee, _Denomination} = estimate_tx_fee(Size, <<>>),
-					{200, #{}, integer_to_binary(Fee), Req}
+					{200, #{}, integer_to_binary(erlang:ceil(Fee * ?PRICE_ENDPOINT_MULT)), Req}
 			end
 	end;
 
@@ -696,7 +698,7 @@ handle(<<"GET">>, [<<"price">>, SizeInBytesBinary, EncodedAddr], Req, _Pid) ->
 									Req};
 						Size ->
 							{Fee, _Denomination} = estimate_tx_fee(Size, Addr),
-							{200, #{}, integer_to_binary(Fee), Req}
+							{200, #{}, integer_to_binary(erlang:ceil(Fee * ?PRICE_ENDPOINT_MULT)), Req}
 					end
 			end
 	end;
